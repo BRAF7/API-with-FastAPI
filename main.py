@@ -52,9 +52,24 @@ class Person(BaseModel):
 
 
 class Location(BaseModel):
-    city: str
-    state: str
-    country: str
+    city: str = Field(
+        ...,
+        title='City',
+        description='Here goes the city',
+        example='Ocozocoautla'
+    )
+    state: str = Field(
+        ...,
+        title='State',
+        description='Here goes the State',
+        example='Chiapas'
+    )
+    country: str = Field(
+        ...,
+        title='Country',
+        description='Here goes the country',
+        example='Mexico'
+    )
 
 
 
@@ -71,7 +86,8 @@ def create_person(
     person : Person = Body(
         ...,
         title='Create person',
-        description='Creates a person. It´s required'
+        description='Creates a person. It´s required',
+        example='Mar'
         )
 ) -> str:
     return '200 OK'
@@ -86,13 +102,15 @@ def show_person(
         minlength=1, 
         maxlength=50,
         title='Person name',
-        description='This is the person name. It´s between 1 and 50 characters'
+        description='This is the person name. It´s between 1 and 50 characters',
+        example='Mar'
         ),
     #Not recommended to use required with Query parameters
     age : int = Query(
         ...,
         title='Person age',
         description='This is the person age. It´s required',
+        example=15,
         ),
 ) -> dict:
     return {name : age}
@@ -105,6 +123,7 @@ def show_person(
     person_id: int = Path(
         ...,
         gt=0,
+        example=1,
     )
 ) -> dict:
     return {person_id : 'It exists'}
@@ -119,7 +138,8 @@ def update_person(
         title='Person ID',
         description='This is the person ID',
         #Greater than 0
-        gt=0
+        gt=0,
+        example=1,
     ),
     person : Person = Body(...),
     location : Location = Body(...)
