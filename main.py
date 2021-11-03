@@ -3,7 +3,7 @@ from typing import Optional
 from enum import Enum
 
 #Pydantic
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 #FastAPI
 from fastapi import FastAPI 
 #Allows to know that a parameter its body type
@@ -36,6 +36,11 @@ class Person(BaseModel):
     #Default None
     married : Optional[bool] = Field(default=None)
     hair_color : Optional[HairColor] = Field(default=None)
+    email : EmailStr = Field(
+        ...,
+        title='Person email',
+        description='Here goes the email',
+    )
 
 
 
