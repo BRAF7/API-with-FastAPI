@@ -24,22 +24,28 @@ class Person(BaseModel):
     first_name : str = Field(
         ...,
         min_length=1,
-        max_length=50
+        max_length=50,
+        example='Mar'
     )
     last_name : str = Field(
         ...,
         min_length=1, 
-        max_length= 50
+        max_length= 50,
+        #----------------------------------------------------------------
+        #We´re adding a parameter example 
+        # ---------------------------------------------------------------
+        example='Pascacio'
     )
     #Optional parameters
     #Expect String
     #Default None
-    married : Optional[bool] = Field(default=None)
-    hair_color : Optional[HairColor] = Field(default=None)
+    married : Optional[bool] = Field(default=None, example=True)
+    hair_color : Optional[HairColor] = Field(default='black')
     email : EmailStr = Field(
         ...,
         title='Person email',
         description='Here goes the email',
+        example='mar@gmail.com'
     )
 
 
