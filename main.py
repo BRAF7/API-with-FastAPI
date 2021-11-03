@@ -1,8 +1,9 @@
 #Python
 from typing import Optional
+from enum import Enum
 
 #Pydantic
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 #FastAPI
 from fastapi import FastAPI 
 #Allows to know that a parameter its body type
@@ -12,14 +13,29 @@ from fastapi import Body, Query, Path
 
 app = FastAPI()
 
+class HairColor(Enum):
+    white = 'white'
+    black = 'black'
+    brown = 'brown'
+    blonde = 'blonde'
+
 #Models
 class Person(BaseModel):
-    first_name : str
-    last_name : str
+    first_name : str = Field(
+        ...,
+        min_length=1,
+        max_length=50
+    )
+    last_name : str = Field(
+        ...,
+        min_length=1, 
+        max_length= 50
+    )
     #Optional parameters
     #Expect String
     #Default None
-    married : Optional[bool] = None
+    married : Optional[bool] = Field(default=None)
+    hair_color : Optional[HairColor] = Field(default=None)
 
 
 
