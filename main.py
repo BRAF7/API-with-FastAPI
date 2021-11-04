@@ -18,9 +18,8 @@ class HairColor(Enum):
     black = 'black'
     brown = 'brown'
     blonde = 'blonde'
-
-#Models
-class Person(BaseModel):
+    
+class PersonBase(BaseModel):
     first_name : str = Field(
         ...,
         min_length=1,
@@ -48,6 +47,20 @@ class Person(BaseModel):
         example='mar@gmail.com'
     )
 
+#Models
+class Person(PersonBase):
+    password: str = Field(
+        ...,
+        min_length=8,
+        max_length=50,
+        example='password'
+    )
+
+
+
+
+class PersonOut(PersonBase):
+    pass
 
 
 
@@ -81,16 +94,15 @@ def home() -> str:
 
 
 
-@app.post('/person/new')
+@app.post('/person/new', response_model=PersonOut)
 def create_person(
     person : Person = Body(
         ...,
         title='Create person',
         description='Creates a person. It´s required',
-        example='Mar'
-        )
-) -> str:
-    return '200 OK'
+    )
+) -> Person:
+    return person
 
 #Validations: Query Parameters
 
