@@ -7,7 +7,7 @@ from pydantic import BaseModel, Field, EmailStr
 #FastAPI
 from fastapi import FastAPI 
 #Allows to know that a parameter its body type
-from fastapi import Body, Query, Path, status
+from fastapi import Body, Query, Path, status, Form
 
 
 
@@ -82,6 +82,20 @@ class Location(BaseModel):
         title='Country',
         description='Here goes the country',
         example='Mexico'
+    )
+
+
+
+
+class LoginOut(BaseModel):
+    username: str = Field(...,
+        description='Username',
+        example='admin'
+    )
+
+    message: str = Field(
+        default='Login successful',
+        description='Message to return to the user'
     )
 
 
@@ -163,3 +177,27 @@ def update_person(
     result = person.dict()
     result.update(location.dict())
     return result
+
+
+
+
+@app.post(
+    path='/login',
+    response_model=LoginOut,
+    status_code=status.HTTP_200_OK,
+)
+def login(
+    username: str = Form(
+        ...,
+        min_length=3,
+        max_length=10,
+        example='root'
+    ),
+
+    password: str = Form(
+        ...,
+        min_length=8,
+        max_length=50,
+        example='toor'
+    ),
+) -> LoginOut: return LoginOut(username=username)
