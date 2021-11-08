@@ -8,7 +8,7 @@ from pydantic import BaseModel, Field, EmailStr
 from fastapi import FastAPI 
 #Allows to know that a parameter its body type
 from fastapi import Body, Query, Path, Form, Cookie, Header, File
-from fastapi import status, UploadFile
+from fastapi import status, UploadFile, HTTPException
 
 
 
@@ -147,6 +147,8 @@ def show_person(
     return {name : age}
 
 
+#List persons
+persons = [1,2,3,4,5]
 
 #Path paramters
 @app.get(path='/person/detail/{person_id}', status_code=status.HTTP_200_OK)
@@ -157,6 +159,11 @@ def show_person(
         example=1,
     )
 ) -> dict:
+    if person_id not in persons:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail="person not found"
+        )
     return {person_id : 'It exists'}
 
 
