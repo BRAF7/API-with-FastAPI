@@ -7,7 +7,8 @@ from pydantic import BaseModel, Field, EmailStr
 #FastAPI
 from fastapi import FastAPI 
 #Allows to know that a parameter its body type
-from fastapi import Body, Query, Path, status, Form
+from fastapi import Body, Query, Path, Form, Cookie, Header, File
+from fastapi import status, UploadFile
 
 
 
@@ -201,3 +202,49 @@ def login(
         example='toor'
     ),
 ) -> LoginOut: return LoginOut(username=username)
+
+
+
+
+@app.post(path='/contact', status_code=status.HTTP_200_OK)
+def contact(
+    first_name: str = Form(
+        ...,
+        max_length=20,
+        min_length=1,
+        example='Mar'
+    ),
+    last_name: str = Form(
+        ...,
+        max_length=20,
+        min_length=1,
+        example='Pascasio'
+    ),
+    email: EmailStr = Form(
+        ...,
+        example='mar@gmail.com'
+    ),
+    message: str = Form(
+        ...,
+        min_length=20,
+        max_length=280,
+        example='Esta es una linea de codigo con más de 20 caracteres'
+    ),
+    user_agent: Optional[str] = Header(default=None),
+    ads: Optional[str] = Cookie(default=None)
+) -> str: return user_agent
+
+
+
+
+@app.post(path='/post-image',status_code=status.HTTP_200_OK)
+def post_image(
+    image: UploadFile = File(...)
+): return {
+    #getting the name of the file
+    'filename': image.filename,
+    #show the type of image
+    'format': image.content_type,
+    #convert bytes to kb
+    'size(kb)': round(len(image.file.read()) / 1024, 2)
+}
