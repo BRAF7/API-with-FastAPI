@@ -150,6 +150,7 @@ def create_person(
     status_code=status.HTTP_200_OK,
     tags= ['Persons'],
     summary='Get the details of a person',
+    deprecated=True
 )
 def show_person(
     name : Optional[str] = Query(
