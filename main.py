@@ -105,7 +105,7 @@ class LoginOut(BaseModel):
 @app.get(
     path='/',
     status_code=status.HTTP_200_OK,
-    tags=['Home']
+    tags=['Home'],
 )
 def home() -> str:
     return 'Hola desde FastAPI'
@@ -117,7 +117,8 @@ def home() -> str:
     path='/person/new',
     response_model=PersonOut,
     status_code=status.HTTP_201_CREATED,
-    tags= ['Persons']
+    tags= ['Persons'],
+    summary='Create a person'
 )
 def create_person(
     person : Person = Body(
@@ -126,6 +127,19 @@ def create_person(
         description='Creates a person. It´s required',
     )
 ) -> Person:
+    """
+    #Create a person.
+    
+    Creates a person an saves it.
+    
+    Args: 
+    -Request body:
+        -**person:Person** -> a person model with first name, hair color, etc.
+        
+    Returns: 
+        a person model.
+    
+    """
     return person
 
 #Validations: Query Parameters
@@ -134,7 +148,8 @@ def create_person(
 @app.get(
     path='/person/detail', 
     status_code=status.HTTP_200_OK,
-    tags= ['Persons']
+    tags= ['Persons'],
+    summary='Get the details of a person',
 )
 def show_person(
     name : Optional[str] = Query(
@@ -153,6 +168,15 @@ def show_person(
         example=15,
         ),
 ) -> dict:
+    """
+    #Show a person 
+    
+    Args:
+        name, age 
+
+    Returns:
+       a dictionary with the data of the person
+    """
     return {name : age}
 
 
@@ -163,7 +187,8 @@ persons = [1,2,3,4,5]
 @app.get(
     path='/person/detail/{person_id}', 
     status_code=status.HTTP_200_OK,
-    tags= ['Persons']
+    tags= ['Persons'],
+    summary='Returns a person using the ID '
 )
 def show_person(
     person_id: int = Path(
@@ -172,6 +197,19 @@ def show_person(
         example=1,
     )
 ) -> dict:
+    """
+    #Person details
+
+    Args:
+        person_id -> ID of the person.
+
+    In case the person is not found
+    Raises:
+        HTTPException: [description]
+
+    Returns:
+        dict: [description]
+    """
     if person_id not in persons:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -185,7 +223,8 @@ def show_person(
 @app.put(
     path='/person/{person_id}', 
     status_code=status.HTTP_200_OK,
-    tags= ['Persons']
+    tags= ['Persons'],
+    summary='Saves a person in the database'
 )
 def update_person(
     person_id: int = Path(
@@ -199,6 +238,17 @@ def update_person(
     person : Person = Body(...),
     location : Location = Body(...)
 ) -> dict:
+    """
+    Updating person
+
+    Args:
+        person_id -> ID of the person
+        person -> name, haircolor, etc
+        location -> City, country, state
+
+    Returns:
+        return a dictionary with all the info
+    """
     result = person.dict()
     result.update(location.dict())
     return result
@@ -210,7 +260,8 @@ def update_person(
     path='/login',
     response_model=LoginOut,
     status_code=status.HTTP_200_OK,
-    tags= ['Persons']
+    tags= ['Persons'],
+    summary='Login a user'
 )
 def login(
     username: str = Form(
@@ -226,7 +277,17 @@ def login(
         max_length=50,
         example='toor'
     ),
-) -> LoginOut: return LoginOut(username=username)
+) -> LoginOut:
+    """
+    #Login user
+
+    Args:
+        username -> Name of the user
+        password -> Password of the user
+    Returns:
+        **loginOut : LoginOut** -> A model of loginOut with only the username
+    """
+    return LoginOut(username=username)
 
 
 
@@ -234,7 +295,8 @@ def login(
 @app.post(
     path='/contact', 
     status_code=status.HTTP_200_OK,
-    tags=['Contact']
+    tags=['Contact'],
+    summary='Send a message to someone'
 )
 def contact(
     first_name: str = Form(
@@ -261,7 +323,22 @@ def contact(
     ),
     user_agent: Optional[str] = Header(default=None),
     ads: Optional[str] = Cookie(default=None)
-) -> str: return user_agent
+) -> str:
+    """
+    #Send a email
+
+    Args:
+        first_name -> First name of the person who send
+        last_name -> Last name of the person who send
+        email -> Email address of the person who send
+        message -> Message to send
+        user_agent -> Information about the person who send
+        ads -> cookies
+
+    Returns:
+        str: [description]
+    """
+    return user_agent
 
 
 
@@ -269,11 +346,22 @@ def contact(
 @app.post(
     path='/post-image',
     status_code=status.HTTP_200_OK,
-    tags=['Upload']
+    tags=['Upload'], 
+    summary='Upload image',
 )
 def post_image(
     image: UploadFile = File(...)
-): return {
+): 
+    """
+    #Upload Image
+
+    Args:
+        image -> Image to upload
+
+    Returns:
+        Type of the image and it´s weight
+    """
+    return {
     #getting the name of the file
     'filename': image.filename,
     #show the type of image
